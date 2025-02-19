@@ -1,0 +1,64 @@
+[
+  {
+    "id": "1",
+    "name": "Petya",
+    "position": "Math",
+    "ratings": [
+      1,
+      1,
+      1,
+      1
+    ],
+    "rating": 1,
+    "usersRated": [
+      558780898,
+      113115483
+    ]
+  },
+  {
+    "id": "2",
+    "name": "Vasya",
+    "position": "Physics",
+    "ratings": [
+      3,
+      5,
+      1,
+      3
+    ],
+    "rating": 3,
+    "usersRated": [
+      558780898,
+      113115483
+    ]
+  },
+  {
+    "id": "3",
+    "name": "Kolya",
+    "position": "Chemistry",
+    "ratings": [
+      4,
+      4
+    ],
+    "rating": 4,
+    "usersRated": [
+      558780898,
+      113115483
+    ]
+  },
+  {
+    "id": "4",
+    "name": "Igor",
+    "position": "Literature",
+    "ratings": [
+      3,
+      4,
+      1
+    ],
+    "rating": 2.6666666666666665,
+    "usersRated": [
+      558780898,
+      113115483,
+      203460395
+    ]
+  }
+]

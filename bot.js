@@ -19,8 +19,18 @@ bot.start((ctx) => { // bot /start command
 
 let teachers = JSON.parse(fs.readFileSync("teachers.json", "utf8"));
 
-bot.command('rate', async (ctx) => {    // rate teacher - teacherKeyboardWithRatings
-    ctx.reply('Выберите учителя для оценки:', teacherKeyboardWithRatings());
+bot.command('rate', async (ctx) => {    
+    ctx.reply('⭐ Выберите учителя для оценки:', teacherKeyboardWithPagination(1));
+});
+
+bot.action(/^page_(\d+)$/, async (ctx) => {
+    ctx.answerCbQuery();
+    
+    const page = parseInt(ctx.match[1]);
+    ctx.editMessageText('⭐ Выберите учителя для оценки:', {
+        reply_markup: teacherKeyboardWithPagination(page).reply_markup,
+        parse_mode: "Markdown"
+    });
 });
 
 bot.command('teacher', async (ctx) => {    // get info about teacher - teacherKeyboardNames
@@ -96,17 +106,17 @@ const teacherKeyboardNames = () => {
     );
 };
 
-const teacherKeyboardWithRatings = () => {
-    const { teacherRatings, teacherNums } = loadRatings();
+// const teacherKeyboardWithRatings = () => {
+//     const { teacherRatings, teacherNums } = loadRatings();
     
-    return Markup.inlineKeyboard(
-        teachers.map(teacher => {
-            const id = teacher.id;
-            const avgRating = teacherNums[id] > 0 ? (teacherRatings[id] / teacherNums[id]).toFixed(1) : "0";
-            return [Markup.button.callback(`${teacher.name} (${avgRating}⭐)`, `teacher_${id}_rate`)];
-        })
-    );
-};
+//     return Markup.inlineKeyboard(
+//         teachers.map(teacher => {
+//             const id = teacher.id;
+//             const avgRating = teacherNums[id] > 0 ? (teacherRatings[id] / teacherNums[id]).toFixed(1) : "0";
+//             return [Markup.button.callback(`${teacher.name} (${avgRating}⭐)`, `teacher_${id}_rate`)];
+//         })
+//     );
+// };
 
 // callback functions below 
 
@@ -200,6 +210,39 @@ bot.action(/^rate_(\d+)_(\d+)$/, async (ctx) => {
 });
 
 
+
+
+
+
+
+const teachersPerPage = 7; // Number of teachers per page
+
+const teacherKeyboardWithPagination = (page = 1) => {
+    const { teacherRatings, teacherNums } = loadRatings();
+    
+    const totalPages = Math.ceil(teachers.length / teachersPerPage);
+    const startIndex = (page - 1) * teachersPerPage;
+    const endIndex = startIndex + teachersPerPage;
+
+    const pageTeachers = teachers.slice(startIndex, endIndex);
+
+    const buttons = pageTeachers.map(teacher => {
+        const id = teacher.id;
+        const avgRating = teacherNums[id] > 0 ? (teacherRatings[id] / teacherNums[id]).toFixed(1) : "0";
+        return [Markup.button.callback(`${teacher.name} (${avgRating}⭐)`, `teacher_${id}_rate`)];
+    });
+
+    // 📌 Add pagination buttons
+    if (totalPages > 1) {
+        const paginationButtons = [];
+        if (page > 1) paginationButtons.push(Markup.button.callback("⏪ Prev", `page_${page - 1}`));
+        if (page < totalPages) paginationButtons.push(Markup.button.callback("Next ⏩", `page_${page + 1}`));
+        
+        buttons.push(paginationButtons);
+    }
+
+    return Markup.inlineKeyboard(buttons);
+};
 
 bot.launch({ dropPendingUpdates: true });
 process.once('SIGINT', () => bot.stop('SIGINT'));

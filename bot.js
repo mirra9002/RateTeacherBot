@@ -138,7 +138,7 @@ bot.action(/^teacher_(\d+)_rate$/, async (ctx) => {
     const avgRating = teacherNums[teacherId] > 0 ? (teacherRatings[teacherId] / teacherNums[teacherId]).toFixed(1) : "N/A";
 
     ctx.reply(
-        `📖 Оцените учителя\n\n👤 *${teacher.name}*\n`,
+        `📖 Оцените учителя\n\n👤 ${teacher.name}\n`,
         Markup.inlineKeyboard([
             [Markup.button.callback("⭐ 1", `rate_${teacherId}_1`), Markup.button.callback("⭐ 2", `rate_${teacherId}_2`)],
             [Markup.button.callback("⭐ 3", `rate_${teacherId}_3`), Markup.button.callback("⭐ 4", `rate_${teacherId}_4`)],
